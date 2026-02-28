@@ -49,4 +49,3 @@ void FractalTree::render(float x, float y, float length, float angle, float thic
         render(x_end, y_end, new_length, new_right_angle, new_thickness, camera, top_left, bottom_right, colorful, depth);
         render(x_end, y_end, new_length, new_left_angle, new_thickness,  camera, top_left, bottom_right, colorful, depth);
     }
-

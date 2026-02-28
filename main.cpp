@@ -1,4 +1,5 @@
 #include "render.hpp"
+#include <raylib.h>
 
 constexpr int WIDTH = 1200;
 constexpr int HEIGHT = 1200;
@@ -19,7 +20,7 @@ int main(void)
     Camera2D default_camera = camera; 
     
     FractalTree ft = FractalTree();
-    
+
     while (!WindowShouldClose())
     {
         // camera targets mouse 
