@@ -13,8 +13,8 @@
 
 using namespace std::complex_literals;
 
-constexpr int WIDTH          = 600;
-constexpr int HEIGHT         = 600;
+constexpr int WIDTH          = 400;
+constexpr int HEIGHT         = 400;
 constexpr int MAX_DEPTH      = 100;
 constexpr int MAX_ITERATIONS = 20;
 
@@ -46,10 +46,10 @@ struct MendelBrot
     void update();
     void complex_camera();
     void handle_pan();
-    int compute_escape(double a, double b);
+    int compute_escape(double a, double b, double max_iterations);
     
     // return color per iterations
-    void map_color(int iterations, unsigned char* buff);
+    void map_color(int iterations, unsigned char* buff, double max_iteration);
     
     template <typename T>
     inline T normalize_squared(const std::complex<T>&z);

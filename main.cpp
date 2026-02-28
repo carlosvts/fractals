@@ -51,14 +51,15 @@ int main(void)
         // #################################
         
         BeginDrawing();
-            ClearBackground(WHITE);
-        
+            ClearBackground(BLACK);
+            
             if (mode == "mendelbrot") 
             {
                 mb.render();
                 mb.handle_pan();
                 mb.complex_camera();
                 mb.update(); 
+                DrawFPS(10, 10);
             }
     
             if (mode == "tree")

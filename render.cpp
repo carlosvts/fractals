@@ -1,4 +1,5 @@
 #include "render.hpp"
+#include <cmath>
 #include <complex>
 #include <cstring>
 #include <cstdint>
@@ -77,37 +78,43 @@ void MendelBrot::render()
         double imaginary_width = max_i - min_i;
         double dx = real_width/WIDTH;
         double dy = imaginary_width/HEIGHT;
-
+        double zoom_level = real_width;
         
         for (int y{}; y < HEIGHT; y++)
         {
             for (int x{}; x < WIDTH; x++)
             {
-                // c = a + bi
-                // normalize pixel
-                double normalized_x = static_cast<double>(x) / WIDTH;
-                double normalized_y = static_cast<double>(y) / HEIGHT;
-
+                // z = a + bi
 
                 double a = min_re + x * dx;
                 double b = min_i + y * dy;
 
-                int iterations = compute_escape(a, b);
+                double max_iter = 30 * 20 * log(1 / zoom_level + 1.0f);
+                // z calculated here
+                int iterations = compute_escape(a, b, max_iter);
                 int idx = (y * WIDTH + x) * 4;
 
-                map_color(iterations, &buff[idx]);
+                map_color(iterations, &buff[idx], max_iter);
             }
         }
-        printf("renderized\n");
-        printf("%d %d %d %d\n", buff[0], buff[1], buff[2], buff[3]);
     }
 
-int MendelBrot::compute_escape(double a, double b)
+int MendelBrot::compute_escape(double a, double b, double max_iterations)
 {
+    if (max_iterations == 0) max_iterations = MAX_ITERATIONS;
+
     double zr = 0.0, zi = 0.0;
     double zr2 = 0.0, zi2 = 0.0;
+    
+    // Optimizations
+    double q = ((a - 0.25)*(a - 0.25)) + b * b;
+    // cardioid test
+    if (q * (q + (a - 0.25)) <= 0.25 * b * b) return 0L;
+    // period-2 bulb test
+    if ( ((a + 1) * (a + 1)) + b * b <= 1.0/16.0) return 0L;
+    
     int i {};
-    while (i < MAX_ITERATIONS && (zr2 + zi2) < 4)
+    while (i < max_iterations && (zr2 + zi2) < 4)
     {
         zi = 2.0 * zr * zi + b; // b imaginary of c
         zr = zr2 - zi2 + a;    // a real of  c
@@ -116,7 +123,7 @@ int MendelBrot::compute_escape(double a, double b)
         ++i;
     }
 
-    if (i == MAX_ITERATIONS)
+    if (i == max_iterations)
     {
         return 0L; // 0 long
     }
@@ -142,8 +149,8 @@ inline T MendelBrot::normalize_squared(const std::complex<T>& z)
     return z.real() * z.real() + z.imag() * z.imag();
 }
 
-void MendelBrot::map_color(int iterations, unsigned char* buff)
-{
+void MendelBrot::map_color(int iterations, unsigned char* buff, double max_iterations)
+{   
     if (iterations == 0 || iterations == MAX_ITERATIONS)
     {
         buff[0] = 0;
@@ -153,12 +160,12 @@ void MendelBrot::map_color(int iterations, unsigned char* buff)
         return;
     }
 
-    double t = (double)iterations / MAX_ITERATIONS;
-
-    buff[0] = (unsigned char)(t * 255);         // R
-    buff[1] = 10;                               // G a bit
-    buff[2] = (unsigned char)((1.0 - t) * 255); // B inverse of R
-    buff[3] = 255;                              // A max opacity
+    double t = (double)iterations / max_iterations;
+    t = pow(t, 0.6);
+    buff[0] = 255 * t;               // R
+    buff[1] = 255 * t;                // G
+    buff[2] = 255 * t;               // B
+    buff[3] = 255;                         // A max opacity
 }
 
 void MendelBrot::complex_camera()
