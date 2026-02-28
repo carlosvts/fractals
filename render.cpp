@@ -1,5 +1,7 @@
 #include "render.hpp"
-#include <iostream>
+#include <complex>
+#include <cstring>
+#include <cstdint>
 #include <raylib.h>
 
 FractalTree::FractalTree() 
@@ -49,3 +51,120 @@ void FractalTree::render(float x, float y, float length, float angle, float thic
         render(x_end, y_end, new_length, new_right_angle, new_thickness, camera, top_left, bottom_right, colorful, depth);
         render(x_end, y_end, new_length, new_left_angle, new_thickness,  camera, top_left, bottom_right, colorful, depth);
     }
+
+MendelBrot::MendelBrot()
+    {
+        buff = new uint32_t[WIDTH * HEIGHT];
+        memset(buff, 0, WIDTH * HEIGHT * sizeof(uint32_t));
+        // Image
+        img.data = buff;
+        img.height = HEIGHT;
+        img.width = WIDTH;
+        img.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+
+        // 2d texture
+        tex = LoadTextureFromImage(img);
+    }
+
+MendelBrot::~MendelBrot()
+    {
+        UnloadTexture(tex);
+        delete[] buff;
+    }
+
+void MendelBrot::render()
+    {
+        double real_width = max_re - min_re;
+        double imaginary_width = max_i - min_i;
+        double dx = real_width/WIDTH;
+        double dy = imaginary_width/HEIGHT;
+
+        
+        for (int y{}; y < HEIGHT; y++)
+        {
+            for (int x{}; x < WIDTH; x++)
+            {
+                // c = a + bi
+                // normalize pixel
+                double normalized_x = static_cast<double>(x) / WIDTH;
+                double normalized_y = static_cast<double>(y) / HEIGHT;
+
+
+                double a = min_re + x * dx;
+                double b = min_i + y * dy;
+
+                int iterations = compute_escape(a, b);
+
+                buff[static_cast<int>(y * WIDTH + x)] = map_color(iterations);
+            }
+        }
+    }
+
+int MendelBrot::compute_escape(double a, double b)
+{
+    std::complex<double> c{a, b};
+    std::complex<double> z{0., 0.}; 
+    int i {};
+    while (i < MAX_ITERATIONS && normalize_squared(z) < 4)
+    {
+        z = z * z + c; 
+        ++i;
+    }
+
+    if (i == MAX_ITERATIONS)
+    {
+        return 0L; // 0 long
+    }
+    else 
+    {
+        // a number has escaped 
+        return i;
+    }
+}
+
+void MendelBrot::update()
+{
+    printf("Texture ID: %u | Width: %d | Height: %d\n", tex.id, tex.width, tex.height);
+    Image testImg = GenImageColor(WIDTH, HEIGHT, GREEN);
+    UpdateTexture(tex, testImg.data); 
+    UnloadImage(testImg); // Limpa a temporária
+
+    DrawTexture(tex, 0, 0, WHITE);
+    //UpdateTexture(tex, buff);
+    //DrawTexture(tex, 0, 0, WHITE);
+}
+
+template <typename T>
+inline T MendelBrot::normalize_squared(const std::complex<T>& z)
+{
+    // we need to check if |z²| > threshold (in our case is 2)
+    // so, |z| = sqrt(z_im², z_real²). So 2² = 4
+    // squaring both sides
+    return z.real() * z.real() + z.imag() * z.imag();
+}
+
+uint32_t MendelBrot::map_color(int iterations)
+{
+    if (iterations == 0 || iterations == MAX_ITERATIONS)
+    {
+        return 0x000000FF; // opacity at maximum
+    }
+
+    // normalized iteration value (used as perecntage)
+    double t = static_cast<double>(iterations) / MAX_ITERATIONS;
+
+    unsigned char r = static_cast<unsigned char>(t * 255); // red channel
+    unsigned char g = 10; // a little of green
+    // inverse of red
+    unsigned char b = static_cast<unsigned char>((1.0f - t) * 255); // blue
+    unsigned char a = 255; 
+
+    // assuming rgba
+    // R 00000000
+    // G 00000000
+    // B 00000000
+    // A 00000000
+    // 32bits in R, G, B, A 
+    // shift red by 24 and so on so they will be in correct order (if rgba)
+    return (r << 24) | (g << 16) | (b << 8) | a;
+}

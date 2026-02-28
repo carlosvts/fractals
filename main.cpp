@@ -1,15 +1,12 @@
 #include "render.hpp"
 #include <raylib.h>
 
-constexpr int WIDTH = 1200;
-constexpr int HEIGHT = 1200;
-constexpr int MAX_DEPTH = 100;
-
 int main(void)
 {
     InitWindow(WIDTH, HEIGHT, "fractal");
     SetTargetFPS(24);
-    
+    std::string mode = "mendelbrot";
+
     // Camera
     Camera2D camera = { 0 };
     camera.target = (Vector2) {WIDTH/2.0f, HEIGHT/2.0f};
@@ -20,9 +17,15 @@ int main(void)
     Camera2D default_camera = camera; 
     
     FractalTree ft = FractalTree();
+    MendelBrot mb = MendelBrot();
+
+    if (mode == "mendelbrot") { mb.render(); }
 
     while (!WindowShouldClose())
     {
+        // #################################
+        //          Camera and Inputs
+        // #################################
         // camera targets mouse 
         float mousex = GetMouseX();
         float mousey = GetMouseY();
@@ -43,13 +46,24 @@ int main(void)
         {
             camera = default_camera;
         }
+        // ##################################
+        //            draw logic
+        // #################################
+        
         BeginDrawing();
-            ClearBackground(BLACK);
-            BeginMode2D(camera);
-                Vector2 top_left = GetScreenToWorld2D({0, 0}, camera);
-                Vector2 bottom_right = GetScreenToWorld2D({(float)GetScreenWidth(), (float)GetScreenHeight()}, camera);
-                ft.render(WIDTH/2.0f, HEIGHT - 20, 300, 0, 20, camera, top_left, bottom_right, false, MAX_DEPTH);  
-            EndMode2D();
+        ClearBackground(WHITE);
+        
+            if (mode == "mendelbrot") { mb.update(); }
+
+            if (mode == "tree")
+            {
+                BeginMode2D(camera);
+                    Vector2 top_left = GetScreenToWorld2D({0, 0}, camera);
+                    Vector2 bottom_right = GetScreenToWorld2D({(float)GetScreenWidth(), (float)GetScreenHeight()}, camera);
+                    ft.render(WIDTH/2.0f, HEIGHT - 20, 300, 0, 20, camera, top_left, bottom_right, false, MAX_DEPTH);   
+                EndMode2D();
+            }
+
         EndDrawing();
     }
 
