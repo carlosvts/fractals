@@ -1,11 +1,7 @@
-// WIDTH/2, HEIGHT - 20, 300, 0, 20
 // Renders a fractal based on which model
 #include <cstdlib>
-#include <iterator>
-#include <new>
 #include <raylib.h>
 #include <cmath>
-#include <cstdint>
 #include <random>
 #include <experimental/random>
 #include <vector> 
