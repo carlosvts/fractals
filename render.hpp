@@ -12,5 +12,5 @@ struct FractalTree
     std::mt19937 mtgen;
 
     FractalTree();
-    void render(float xpos, float ypos, float len, float ang, float thick, float zoom, bool colorful);
+    void render(float xpos, float ypos, float len, float ang, float thick, const Camera2D& camera, Vector2 top_left, Vector2 bottom_right, bool colorful, int depth);
 };

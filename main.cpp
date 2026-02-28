@@ -2,6 +2,7 @@
 
 constexpr int WIDTH = 1200;
 constexpr int HEIGHT = 1200;
+constexpr int MAX_DEPTH = 100;
 
 int main(void)
 {
@@ -44,7 +45,9 @@ int main(void)
         BeginDrawing();
             ClearBackground(BLACK);
             BeginMode2D(camera);
-                ft.render(WIDTH/2.0f, HEIGHT - 20, 300, 0, 20, camera.zoom, false);  
+                Vector2 top_left = GetScreenToWorld2D({0, 0}, camera);
+                Vector2 bottom_right = GetScreenToWorld2D({(float)GetScreenWidth(), (float)GetScreenHeight()}, camera);
+                ft.render(WIDTH/2.0f, HEIGHT - 20, 300, 0, 20, camera, top_left, bottom_right, false, MAX_DEPTH);  
             EndMode2D();
         EndDrawing();
     }
