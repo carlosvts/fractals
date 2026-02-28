@@ -53,7 +53,12 @@ int main(void)
         BeginDrawing();
             ClearBackground(WHITE);
         
-            if (mode == "mendelbrot") { mb.render(), mb.update(); }
+            if (mode == "mendelbrot") 
+            {
+                mb.render();
+                mb.complex_camera();
+                mb.update(); 
+            }
     
             if (mode == "tree")
             {

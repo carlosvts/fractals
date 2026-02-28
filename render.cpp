@@ -160,3 +160,33 @@ void MendelBrot::map_color(int iterations, unsigned char* buff)
     buff[2] = (unsigned char)((1.0 - t) * 255); // B inverse of R
     buff[3] = 255;                              // A max opacity
 }
+
+void MendelBrot::complex_camera()
+{
+    // get mouse wheel movement
+    float wheel = GetMouseWheelMove();
+
+    // only zoom if there is input
+    if (wheel == 0.0f) return;
+
+    // smoother zoom factor
+    double zoom = (wheel > 0) ? 0.9 : 1.1;
+
+    // get mouse position in complex plane BEFORE zoom
+    double dx = (max_re - min_re) / WIDTH;
+    double dy = (max_i  - min_i)  / HEIGHT;
+
+    double mouse_re = min_re + GetMouseX() * dx;
+    double mouse_i  = min_i + GetMouseY() * dy;
+
+    // compute new width and height after zoom
+    double new_width  = (max_re - min_re) * zoom;
+    double new_height = (max_i  - min_i)  * zoom;
+
+    // adjust min and max so that zoom is centered at mouse position
+    min_re = mouse_re - (GetMouseX() / (double)WIDTH) * new_width;
+    max_re = min_re + new_width;
+
+    min_i  = mouse_i - (GetMouseY() / (double)HEIGHT) * new_height;
+    max_i  = min_i + new_height;
+}
