@@ -190,3 +190,39 @@ void MendelBrot::complex_camera()
     min_i  = mouse_i - (GetMouseY() / (double)HEIGHT) * new_height;
     max_i  = min_i + new_height;
 }
+
+void MendelBrot::handle_pan()
+{
+    static Vector2 last_mouse = {0, 0};
+
+    // if mouse button is pressed, update last position
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    {
+        last_mouse = GetMousePosition();
+    }
+
+    // if holding, move camera
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+    {
+        Vector2 current = GetMousePosition();
+
+        // delta movement in screen space
+        float dx_pixels = current.x - last_mouse.x;
+        float dy_pixels = current.y - last_mouse.y;
+
+        last_mouse = current;
+
+        // convert to complex plane movement
+        double dx = (max_re - min_re) / WIDTH;
+        double dy = (max_i  - min_i)  / HEIGHT;
+
+        double move_re = dx_pixels * dx;
+        double move_i  = dy_pixels * dy;
+
+        // move the view (note the minus to feel natural)
+        min_re -= move_re;
+        max_re -= move_re;
+        min_i  -= move_i;
+        max_i  -= move_i;
+    }
+}

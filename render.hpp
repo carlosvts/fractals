@@ -45,6 +45,7 @@ struct MendelBrot
     void render();
     void update();
     void complex_camera();
+    void handle_pan();
     int compute_escape(double a, double b);
     
     // return color per iterations

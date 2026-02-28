@@ -56,6 +56,7 @@ int main(void)
             if (mode == "mendelbrot") 
             {
                 mb.render();
+                mb.handle_pan();
                 mb.complex_camera();
                 mb.update(); 
             }
