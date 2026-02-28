@@ -162,9 +162,9 @@ void MendelBrot::map_color(int iterations, unsigned char* buff, double max_itera
 
     double t = (double)iterations / max_iterations;
     t = pow(t, 0.6);
-    buff[0] = 255 * t;               // R
+    buff[0] = 255 * t;                // R
     buff[1] = 255 * t;                // G
-    buff[2] = 255 * t;               // B
+    buff[2] = 255 * t;                // B
     buff[3] = 255;                         // A max opacity
 }
 
