@@ -16,8 +16,8 @@ int main(void)
     
     Camera2D default_camera = camera; 
     
-    FractalTree ft = FractalTree();
-    MendelBrot mb = MendelBrot();
+    FractalTree ft;
+    MendelBrot mb;
 
     if (mode == "mendelbrot") { mb.render(); }
 
@@ -51,7 +51,8 @@ int main(void)
         // #################################
         
         BeginDrawing();
-        ClearBackground(WHITE);
+            ClearBackground(WHITE);
+            DrawTriangle({ 0, 0 }, { 0, 500 }, { 500, 500 }, RED);
         
             if (mode == "mendelbrot") { mb.update(); }
 

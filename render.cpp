@@ -98,16 +98,20 @@ void MendelBrot::render()
                 buff[static_cast<int>(y * WIDTH + x)] = map_color(iterations);
             }
         }
+        printf("renderized\n");
     }
 
 int MendelBrot::compute_escape(double a, double b)
 {
-    std::complex<double> c{a, b};
-    std::complex<double> z{0., 0.}; 
+    double zr = 0.0, zi = 0.0;
+    double zr2 = 0.0, zi2 = 0.0;
     int i {};
-    while (i < MAX_ITERATIONS && normalize_squared(z) < 4)
+    while (i < MAX_ITERATIONS && (zr2 + zi2) < 4)
     {
-        z = z * z + c; 
+        zi = 2.0 * zr * zi + b; // b imaginary of c
+        zr = zr2 - zi2 + a;    // a real of  c
+        zr2 = zr * zr;
+        zi2 = zi * zi;
         ++i;
     }
 
@@ -124,14 +128,8 @@ int MendelBrot::compute_escape(double a, double b)
 
 void MendelBrot::update()
 {
-    printf("Texture ID: %u | Width: %d | Height: %d\n", tex.id, tex.width, tex.height);
-    Image testImg = GenImageColor(WIDTH, HEIGHT, GREEN);
-    UpdateTexture(tex, testImg.data); 
-    UnloadImage(testImg); // Limpa a temporária
-
+    UpdateTexture(tex, buff);
     DrawTexture(tex, 0, 0, WHITE);
-    //UpdateTexture(tex, buff);
-    //DrawTexture(tex, 0, 0, WHITE);
 }
 
 template <typename T>

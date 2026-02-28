@@ -13,9 +13,9 @@
 
 using namespace std::complex_literals;
 
-constexpr int WIDTH = 1200;
-constexpr int HEIGHT = 1200;
-constexpr int MAX_DEPTH = 100;
+constexpr int WIDTH          = 400;
+constexpr int HEIGHT         = 400;
+constexpr int MAX_DEPTH      = 100;
 constexpr int MAX_ITERATIONS = 20;
 
 struct FractalTree
