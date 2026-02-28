@@ -19,7 +19,7 @@ int main(void)
     FractalTree ft;
     MendelBrot mb;
 
-    if (mode == "mendelbrot") { mb.render(); }
+    //if (mode == "mendelbrot") { mb.render(); }
 
     while (!WindowShouldClose())
     {
@@ -54,7 +54,7 @@ int main(void)
             ClearBackground(WHITE);
             DrawTriangle({ 0, 0 }, { 0, 500 }, { 500, 500 }, RED);
         
-            if (mode == "mendelbrot") { mb.update(); }
+            if (mode == "mendelbrot") { mb.render(), mb.update(); }
 
             if (mode == "tree")
             {

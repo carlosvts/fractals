@@ -54,8 +54,8 @@ void FractalTree::render(float x, float y, float length, float angle, float thic
 
 MendelBrot::MendelBrot()
     {
-        buff = new uint32_t[WIDTH * HEIGHT];
-        memset(buff, 0, WIDTH * HEIGHT * sizeof(uint32_t));
+        buff = new unsigned char[WIDTH * HEIGHT * 4];
+        memset(buff, 0, WIDTH * HEIGHT * sizeof(unsigned char) * 4);
         // Image
         img.data = buff;
         img.height = HEIGHT;
@@ -94,11 +94,13 @@ void MendelBrot::render()
                 double b = min_i + y * dy;
 
                 int iterations = compute_escape(a, b);
+                int idx = (y * WIDTH + x) * 4;
 
-                buff[static_cast<int>(y * WIDTH + x)] = map_color(iterations);
+                map_color(iterations, &buff[idx]);
             }
         }
         printf("renderized\n");
+        printf("%d %d %d %d\n", buff[0], buff[1], buff[2], buff[3]);
     }
 
 int MendelBrot::compute_escape(double a, double b)
@@ -141,28 +143,21 @@ inline T MendelBrot::normalize_squared(const std::complex<T>& z)
     return z.real() * z.real() + z.imag() * z.imag();
 }
 
-uint32_t MendelBrot::map_color(int iterations)
+void MendelBrot::map_color(int iterations, unsigned char* buff)
 {
     if (iterations == 0 || iterations == MAX_ITERATIONS)
     {
-        return 0x000000FF; // opacity at maximum
+        buff[0] = 0;
+        buff[1] = 0;
+        buff[2] = 0;
+        buff[3] = 255;
+        return;
     }
 
-    // normalized iteration value (used as perecntage)
-    double t = static_cast<double>(iterations) / MAX_ITERATIONS;
+    double t = (double)iterations / MAX_ITERATIONS;
 
-    unsigned char r = static_cast<unsigned char>(t * 255); // red channel
-    unsigned char g = 10; // a little of green
-    // inverse of red
-    unsigned char b = static_cast<unsigned char>((1.0f - t) * 255); // blue
-    unsigned char a = 255; 
-
-    // assuming rgba
-    // R 00000000
-    // G 00000000
-    // B 00000000
-    // A 00000000
-    // 32bits in R, G, B, A 
-    // shift red by 24 and so on so they will be in correct order (if rgba)
-    return (r << 24) | (g << 16) | (b << 8) | a;
+    buff[0] = (unsigned char)(t * 255);         // R
+    buff[1] = 10;                               // G a bit
+    buff[2] = (unsigned char)((1.0 - t) * 255); // B inverse of R
+    buff[3] = 255;                              // A max opacity
 }

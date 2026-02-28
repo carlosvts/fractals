@@ -37,7 +37,7 @@ struct MendelBrot
 
     Image img{};            // cpu (RAM)
     Texture2D tex;          // texture (RAM)
-    uint32_t* buff;    // pixel buffer
+    unsigned char* buff;    // pixel buffer
     
     MendelBrot();
     ~MendelBrot();
@@ -47,7 +47,7 @@ struct MendelBrot
     int compute_escape(double a, double b);
     
     // return color per iterations
-    uint32_t map_color(int iterations);
+    void map_color(int iterations, unsigned char* buff);
     
     template <typename T>
     inline T normalize_squared(const std::complex<T>&z);
