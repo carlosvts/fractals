@@ -52,10 +52,9 @@ int main(void)
         
         BeginDrawing();
             ClearBackground(WHITE);
-            DrawTriangle({ 0, 0 }, { 0, 500 }, { 500, 500 }, RED);
         
             if (mode == "mendelbrot") { mb.render(), mb.update(); }
-
+    
             if (mode == "tree")
             {
                 BeginMode2D(camera);

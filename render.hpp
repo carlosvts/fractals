@@ -13,8 +13,8 @@
 
 using namespace std::complex_literals;
 
-constexpr int WIDTH          = 400;
-constexpr int HEIGHT         = 400;
+constexpr int WIDTH          = 600;
+constexpr int HEIGHT         = 600;
 constexpr int MAX_DEPTH      = 100;
 constexpr int MAX_ITERATIONS = 20;
 

@@ -57,13 +57,12 @@ MendelBrot::MendelBrot()
         buff = new unsigned char[WIDTH * HEIGHT * 4];
         memset(buff, 0, WIDTH * HEIGHT * sizeof(unsigned char) * 4);
         // Image
-        img.data = buff;
-        img.height = HEIGHT;
-        img.width = WIDTH;
-        img.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8A8;
+        Image img = GenImageColor(WIDTH, HEIGHT, BLACK);
 
         // 2d texture
         tex = LoadTextureFromImage(img);
+
+        UnloadImage(img);
     }
 
 MendelBrot::~MendelBrot()
