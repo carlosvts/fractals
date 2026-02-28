@@ -1,5 +1,4 @@
 #include "render.hpp"
-#include <raylib.h>
 
 int main(void)
 {
