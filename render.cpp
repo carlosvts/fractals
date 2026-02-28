@@ -9,9 +9,9 @@ FractalTree::FractalTree()
         colors = {GOLD, ORANGE, YELLOW, BEIGE};
     } 
     
-void FractalTree::render(float x, float y, float length, float angle, float thickness, bool colorful)
+void FractalTree::render(float x, float y, float length, float angle, float thickness, float zoom, bool colorful)
     {
-        if (length <= 2) return;
+        if (length * zoom <= 2.5f) return;
 
         Vector2 start = {x, y};
         float x_end = x + sinf(angle) * length; 
@@ -26,6 +26,6 @@ void FractalTree::render(float x, float y, float length, float angle, float thic
         float new_right_angle = angle + 15*DEG2RAD;
         float new_left_angle = angle - 15*DEG2RAD;
         float new_thickness = thickness * 0.60; 
-        render(x_end, y_end, new_length, new_right_angle, new_thickness, colorful);
-        render(x_end, y_end, new_length, new_left_angle, new_thickness, colorful);
+        render(x_end, y_end, new_length, new_right_angle, new_thickness, zoom, colorful);
+        render(x_end, y_end, new_length, new_left_angle, new_thickness,  zoom, colorful);
     }

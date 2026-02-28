@@ -44,7 +44,7 @@ int main(void)
         BeginDrawing();
             ClearBackground(BLACK);
             BeginMode2D(camera);
-                ft.render(WIDTH/2.0f, HEIGHT - 20, 300, 0, 20, true);  
+                ft.render(WIDTH/2.0f, HEIGHT - 20, 300, 0, 20, camera.zoom, false);  
             EndMode2D();
         EndDrawing();
     }
